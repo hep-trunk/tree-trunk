@@ -1,5 +1,5 @@
 * Trunk
-#+BEGIN_VERSE
+#+BEGIN_EXAMPLE
 "I want a boat that will
 take me far away from here.
 Can you give me a boat?"
@@ -7,7 +7,7 @@ Can you give me a boat?"
 and make a boat," said the tree.
 "Then you can sail away...
 and be happy."
-#+END_VERSE
+#+END_EXAMPLE
 --Shel Siverstein "The Giving Tree"
 
 Trunk is a community curated collection of utilities for reducing
