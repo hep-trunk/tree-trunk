@@ -1,0 +1,120 @@
+* Trunk
+#+BEGIN_QUOTE
+"I want a boat that will
+take me far away from here.
+Can you give me a boat?"
+"Cut down my trunk
+and make a boat," said the tree.
+"Then you can sail away...
+and be happy."
+#+END_QUOTE
+--Shel Siverstein "The Giving Tree"
+
+Trunk is a community curated collection of utilities for reducing
+redundancy in HEP code. This does not include analysis code or
+frameworks.  It does however include code for creating graphics, and
+interfacing with ROOT.  
+
+Trunk is not an acronym (unlike everything else in HEP).  The name
+does try to signify intent.  Trunk is intended to be a layer of code
+that sits on top of root and makes it easier to get things done.  
+
+Each self-contained piece of code (module) is its own repository in
+the hep-trunk organization. If you would like to contribute code, you
+can either open a pull request against an existing repository, or you
+can build module and give control over the repository to the hep-trunk
+organization.  At that point you should be added as a member of the
+hep-trunk organization with commit rights to your repo.
+** Obtaining modules
+First clone this repository, it will get you a copy of the build
+scripts:
+#+BEGIN_SRC sh
+git clone https://github.com/hep-trunk/tree-trunk.git
+cd tree-trunk
+#+END_SRC
+Then in the tree-trunk, you should have =get=, =install= and =build=
+shell scripts that can be used as:
+*** get
+Get depends on =git= so make sure you have a recent version
+installed. 
+#+BEGIN_SRC sh
+./get list # lists available modules
+./get all #alias for getting all available modules
+./get module-name # retrieve source code for module-name
+#+END_SRC
+*** build
+Build depends on GNU make (installed on most systems), as well as
+ROOT. It configures itself they way ROOT was compiled to ensure that
+the produced libraries are compatible.  If you switch ROOT versions,
+you have to rebuild your libraries to match.
+#+BEGIN_SRC sh
+./build all # builds all checked out modules
+./build module-name # builds module-name
+./build clean all # runs 'make clean' all checked out modules
+./build clean module-name # runs 'make clean' on module-name
+#+END_SRC
+*** install
+By default trunk tries to install itself along side ROOT, so it will
+target =$ROOTSYS/{lib,bin}= for shared libraries and binaries
+respectively.
+#+BEGIN_SRC sh
+./install all #install all modules
+./install module-name #installs module-name
+./install uninstall all #remove all checked out modules
+./install uninstall module-name #uninstall module-name
+#+END_SRC
+
+** Organization
+Each module should organize itself as follows:
+#+BEGIN_EXAMPLE
+colors/
+├── doc
+│   └── colors.org
+├── include
+│   └── colors.hh
+├── Makefile
+├── src
+│   └── colors.cxx
+└── test
+    └── demo.cxx
+#+END_EXAMPLE
+The intent of each directory is self explanatory. The documentation in
+=doc/= should be written in a markup language that github knows how to
+parse.  If you know org-mode prefer it, otherwise check [[https://github.com/github/markup][the full list
+of supported markup languages]].
+
+The default target in the =Makefile= should be a rule to build
+=colors/lib/libColor.so= in this example, in addition to any needed
+dependencies.  Then in order to build the whole collection, a user can
+checkout the build script in this repository and compile shared
+libraries for everything, or (s)he can check out a needed piece of
+code without having to pull in extra dependencies.
+** Rules and Guidelines
+In order to provide a uniform user experience please follow these
+rules.
+
+Rules:
+1. Follow rules at all costs.
+2. Guidelines are suggestions.
+3. Use CamelCase for class and method names.
+4. Do not use adjectives, articles or pronouns in object names (ie myObj,
+   theWriter, or aTree)
+5. Use classes only when data must be shared among methods in an
+   unambiguous way.
+6. Make everything "=const=" unless you cannot. 
+
+Guidelines:
+1. Lines should be no longer than 80 columns
+2. Prefer foo_bar to fooBar or FooBar for objects
+3. Write tests that cover all of your code (google gcov tutorial)
+** Contributing
+
+If you have a repository you would like to contribute, re-organize
+according to the rules above. Then open an issue with a link to your
+repository and a brief description of what it provides.  Someone will
+be in touch with transferring ownership to the organization and
+ensuring that you have commit access.
+
+** Current modules
+A list of a modules and one line descriptions can be found
+here. Follow the links to their respective documentation.
