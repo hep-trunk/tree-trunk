@@ -1,0 +1,57 @@
+#!/bin/sh 
+readonly PROGNAME=$(basename $0)
+readonly PROGDIR=$(readlink -m $(dirname $0))
+readonly ARGS="$@"
+#readonly ALLMODULES="colors" "cut" "root-sugar" "tree-utils"
+all_modules(){
+    local cmd=$1;
+    for module in "colors" "cut" "root-sugar" "tree-utils"; do
+	$cmd $module
+    done
+}
+git_clone(){
+    local module=$1
+    git clone git@github.com:hep-trunk/"$module".git "$module";
+}
+usage(){
+    cat <<EOF
+usage: $PROGNAME [all,list] [list of modules to check out]
+
+Checks out a local copy of each module's source code using git.  Use
+the alias 'all' to check out all available modules in the hep-trunk
+organization.
+
+EXAMPLES:
+    $PROGNAME colors cut root-sugar tree-utils
+    $PROGNAME all
+    $PROGNAME list
+OPTIONS: 
+    list             List all available modules
+    all              Checkout all available modules
+    -h --help        Show this help
+EOF
+}
+
+list(){
+# When you add a new module to the organization, please include it
+# here with a one line function describing what the module's purpose
+# is.
+    cat <<EOF
+Use 'all' as an alias for every module in the list.
+
+Module Name   Description
+-----------   -----------
+colors        Utilities for choosing unbiased colors
+cut           A templated cut class and config file parser
+root-sugar    Collection of functions to cleanly copy and retrieve root objects
+tree-utils    Functions to help with setting up input and output variables for trees
+EOF
+}
+
+main(){
+    # echo "Hello: ${ARGS}"
+    all_modules git_clone;
+    list
+  #usage;
+}
+main
