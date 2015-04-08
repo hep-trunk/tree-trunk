@@ -17,7 +17,8 @@ interfacing with ROOT.
 
 Trunk is not an acronym (unlike everything else in HEP).  The name
 does try to signify intent.  Trunk is intended to be a layer of code
-that sits on top of ROOT and makes it easier to get things done.  
+that sits on top of ROOT and makes it easier to get things done.  It
+is a poor man's package manager.
 
 Each self-contained piece of code (module) is its own repository in
 the hep-trunk organization. If you would like to contribute code, you
@@ -38,7 +39,7 @@ understands the following verbs: =get=, =install= and =build=.
 Get depends on =git= so make sure you have a recent version
 installed. 
 #+BEGIN_SRC sh
-./trunk get list # lists available modules
+./trunk list # lists available modules
 ./trunk get all #alias for getting all available modules
 ./trunk get module-name # retrieve source code for module-name
 #+END_SRC
@@ -50,8 +51,8 @@ you have to rebuild your libraries to match.
 #+BEGIN_SRC sh
 ./trunk build all # builds all checked out modules
 ./trunk build module-name # builds module-name
-./trunk build clean all # runs 'make clean' all checked out modules
-./trunk build clean module-name # runs 'make clean' on module-name
+./trunk rebuild all # runs 'make clean' all checked out modules before building
+./trunk rebuild module-name # runs 'make clean' on module-name before building
 #+END_SRC
 *** install
 By default trunk tries to install itself in the =$PWD==, so it will
@@ -60,11 +61,11 @@ respectively. You can modify Makefile.common to change this behavior.
 #+BEGIN_SRC sh
 ./trunk install all #install all modules
 ./trunk install module-name #installs module-name
-./trunk install uninstall all #remove all checked out modules
-./trunk install uninstall module-name #uninstall module-name
+./trunk uninstall all #remove all checked out modules
+./trunk uninstall module-name #uninstall module-name
 #+END_SRC
 
-** Organization
+** Writing a module
 Each module should organize itself as follows:
 #+BEGIN_EXAMPLE
 colors/
@@ -85,10 +86,9 @@ of supported markup languages]].
 
 The default target in the =Makefile= should be a rule to build
 =colors/lib/libColor.so= in this example, in addition to any needed
-dependencies.  Then in order to build the whole collection, a user can
-checkout the build script in this repository and compile shared
-libraries for everything, or (s)he can check out a needed piece of
-code without having to pull in extra dependencies.
+dependencies.  Modules may contain binaries, shared libraries, or just
+include files (especially if the code is templated). 
+
 ** Rules and Guidelines
 In order to provide a uniform user experience please follow these
 rules.
