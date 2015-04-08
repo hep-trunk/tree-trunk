@@ -4,7 +4,7 @@ readonly PROGDIR=$(readlink -m $(dirname $0))
 
 usage(){
     cat <<EOF
-usage: $PROGNAME [get,build,install,list] [all,list of modules to check out]
+usage: $PROGNAME [verbs] [all,list of modules to check out]
 
 Checks out a local copy of each module's source code using git.  Use
 the alias 'all' to check out all available modules in the hep-trunk
@@ -16,10 +16,12 @@ EXAMPLES:
     $PROGNAME list
     $PROGNAME build all
     $PROGNAME install all
-OPTIONS: 
-    get target        Git clone the target's git repo
-    build target      Compile target
-    install target    Install target 
+VERBS: 
+    get               Git clone the target's git repo, update if exists
+    rebuild           Re-compile target (runs 'make clean' first)
+    build             Compile target
+    install           Install target 
+    uninstall         Uninstall target
     list              List all available modules
     help, -h, --help  Show this help
 EOF
@@ -66,20 +68,51 @@ check_all(){
 	proc_list $verb $@
     fi
 }
-
+rebuild_module(){
+    local module=$1
+    local oldpwd=$PWD
+    echo "Building: "$module
+    cd $module;
+    make clean; make;
+    cd $oldpwd;
+}
 build_module(){
     local module=$1
+    local oldpwd=$PWD
     echo "Building: "$module
+    cd $module;
+    make;
+    cd $oldpwd;
 }
 get_module(){
     local module=$1
+    local oldpwd=$PWD
     echo "Getting: "$module
+    if [ -d $PWD/$module/.git ]; then
+	cd $module;
+	git pull;
+	cd $oldpwd;
+    else
+	git_clone $module;
+    fi
 }
 install_module(){
     local module=$1
+    local oldpwd=$PWD
     echo "Installing: "$module
+    cd $module;
+    make install;
+    cd $oldpwd;
 }
-
+uninstall_module(){
+    local module=$1
+    local oldpwd=$PWD
+    echo "Uninstalling: "$module
+    cd $module;
+    make uninstall;
+    cd $oldpwd;
+    local module=$1
+}
 main(){
     local verb=$1
     shift 1
@@ -88,6 +121,9 @@ main(){
 	build)
 	    check_all build_module $@
 	    ;;
+	rebuild)
+	    check_all rebuild_module $@
+	    ;;
 	list)
 	    list;;
 	get)
@@ -95,6 +131,9 @@ main(){
 	    ;;
 	install)
 	    check_all install_module $@
+	    ;;
+	uninstall)
+	    check_all uninstall_module $@
 	    ;;
 	help)
 	    usage;;
