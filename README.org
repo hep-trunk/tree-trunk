@@ -32,15 +32,15 @@ scripts:
 git clone https://github.com/hep-trunk/tree-trunk.git
 cd tree-trunk
 #+END_SRC
-Then in the tree-trunk, you should have =get=, =install= and =build=
-shell scripts that can be used as:
+Then in the tree-trunk, you should have a script called =trunk=. Trunk
+understands the following verbs: =get=, =install= and =build=.
 *** get
 Get depends on =git= so make sure you have a recent version
 installed. 
 #+BEGIN_SRC sh
-./get list # lists available modules
-./get all #alias for getting all available modules
-./get module-name # retrieve source code for module-name
+./trunk get list # lists available modules
+./trunk get all #alias for getting all available modules
+./trunk get module-name # retrieve source code for module-name
 #+END_SRC
 *** build
 Build depends on GNU make (installed on most systems), as well as
@@ -48,20 +48,20 @@ ROOT. It configures itself the way ROOT was compiled to ensure that
 the produced libraries are compatible.  If you switch ROOT versions,
 you have to rebuild your libraries to match.
 #+BEGIN_SRC sh
-./build all # builds all checked out modules
-./build module-name # builds module-name
-./build clean all # runs 'make clean' all checked out modules
-./build clean module-name # runs 'make clean' on module-name
+./trunk build all # builds all checked out modules
+./trunk build module-name # builds module-name
+./trunk build clean all # runs 'make clean' all checked out modules
+./trunk build clean module-name # runs 'make clean' on module-name
 #+END_SRC
 *** install
-By default trunk tries to install itself along side ROOT, so it will
-target =$ROOTSYS/{lib,bin}= for shared libraries and binaries
-respectively.
+By default trunk tries to install itself in the =$PWD==, so it will
+target =$PWD/{include,lib,bin}= for shared libraries and binaries
+respectively. You can modify Makefile.common to change this behavior. 
 #+BEGIN_SRC sh
-./install all #install all modules
-./install module-name #installs module-name
-./install uninstall all #remove all checked out modules
-./install uninstall module-name #uninstall module-name
+./trunk install all #install all modules
+./trunk install module-name #installs module-name
+./trunk install uninstall all #remove all checked out modules
+./trunk install uninstall module-name #uninstall module-name
 #+END_SRC
 
 ** Organization

@@ -1,0 +1,110 @@
+#!/bin/sh 
+readonly PROGNAME=$(basename $0)
+readonly PROGDIR=$(readlink -m $(dirname $0))
+
+usage(){
+    cat <<EOF
+usage: $PROGNAME [get,build,install,list] [all,list of modules to check out]
+
+Checks out a local copy of each module's source code using git.  Use
+the alias 'all' to check out all available modules in the hep-trunk
+organization.
+
+EXAMPLES:
+    $PROGNAME get colors cut root-sugar tree-utils
+    $PROGNAME get all
+    $PROGNAME list
+    $PROGNAME build all
+    $PROGNAME install all
+OPTIONS: 
+    get target        Git clone the target's git repo
+    build target      Compile target
+    install target    Install target 
+    list              List all available modules
+    help, -h, --help  Show this help
+EOF
+}
+list(){
+# When you add a new module to the organization, please include it
+# here with a one line function describing what the module's purpose
+# is.
+    cat <<EOF
+Use 'all' as an alias for every module in the list.
+
+Module Name   Description
+-----------   -----------
+colors        Utilities for choosing unbiased colors
+cut           A templated cut class and config file parser
+root-sugar    Collection of functions to cleanly copy and retrieve root objects
+tree-utils    Functions to help with setting up input and output variables for trees
+EOF
+}
+# Add new modules to this list so that 'all' knows about it
+all_modules(){
+    local cmd=$1;
+    proc_list $cmd "colors" "cut" "root-sugar" "tree-utils"
+}
+
+proc_list(){
+    local cmd=$1;
+    shift 1;
+    local item;
+    for item in $@; do
+	$cmd $item
+    done
+}
+git_clone(){
+    local module=$1
+    git clone git@github.com:hep-trunk/"$module".git "$module";
+}
+check_all(){
+    local verb=$1
+    shift 1
+    if [ "$@" = "all" ]; then
+	all_modules $verb
+    else
+	proc_list $verb $@
+    fi
+}
+
+build_module(){
+    local module=$1
+    echo "Building: "$module
+}
+get_module(){
+    local module=$1
+    echo "Getting: "$module
+}
+install_module(){
+    local module=$1
+    echo "Installing: "$module
+}
+
+main(){
+    local verb=$1
+    shift 1
+    local first_module=$1
+    case "$verb" in
+	build)
+	    check_all build_module $@
+	    ;;
+	list)
+	    list;;
+	get)
+	    check_all get_module $@
+	    ;;
+	install)
+	    check_all install_module $@
+	    ;;
+	help)
+	    usage;;
+	-h)
+	    usage;;
+	--help)
+	    usage;;
+	*)
+	    usage;;
+    esac
+  # usage;
+}
+main "$@"
